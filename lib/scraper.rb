@@ -41,6 +41,35 @@ class Scraper
     shows
   end
 
+  # #scrape_show_page takes the url of a show page and returns a hash with
+  # additional information about the show.
+  def self.scrape_show_page(show_url)
+    show_page = Nokogiri::HTML(open(show_url))
+    show_attributes = {}
+
+    # Get original string
+    show_attributes[:original_text] = show_page.css("div #originalString #stringText").text
+
+    # Get additional attributes
+    show_attributes[:additional_info] = show_page.css("div.showHeader font.attributes").text
+
+    # Maps attributes
+    # I'm not sure if this is the correct one?:
+    # show_page.css("div iframe").attribute("src").value
+
+    show_attributes
+  end
+
+  # NOTES for self.scrape_show_page
+  # Original text (from Steve K's list)
+  # show_page.css("div #originalString #stringText").text
+
+
+  #################################################################
+
+  # for working/debugging only
+
+
   # Create a temp file (that can be loaded later)
   def self.create_local_temp_file(index_url)
     index_page = Nokogiri::HTML(open(index_url))

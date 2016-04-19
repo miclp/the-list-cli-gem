@@ -11,13 +11,20 @@ class CommandLineInteface
 
   def run
     while true
-      puts "Do you want to scrape shows from the web (s) or open the local file (o)?"
-      puts "you can also type \'t\' to create local temp file or \'q\' to quit"
+      puts ""
+      puts "Here are your choices:"
+      puts "\'s\' Scrape shows from the web."
+      puts "\'a\' Add attributes to shows."
+      puts "\'o\' Open the local file."
+      puts "\'t\' Create local temp file."
+      puts "\'q\' to quit."
       usr_input = gets.chomp
 
       case usr_input
       when 's'
         make_shows
+      when 'a'
+        add_attributes_to_shows
       when 'o'
         open_local_file
       when 't'
@@ -35,6 +42,14 @@ class CommandLineInteface
   def make_shows
     shows_array = Scraper.scrape_index_page(BASE_URL)
     Show.create_from_collection(shows_array)
+  end
+
+  def add_attributes_to_shows
+    Show.all.each do |show|
+      attributes = Scraper.scrape_show_page(show.show_url)
+      show.add_show_attributes(attributes)
+    end
+    binding.pry
   end
 
   def create_local_temp_file
