@@ -11,19 +11,29 @@ class Scraper
 
     # array of shows to be returned
     shows = []
+    dummy_array = []
 
-    # the show div's are all contained in the body of hellashows.com
-    all_shows = index_page.css("body")
-
-    # Add each .container to the shows array
-    all_shows.css("div.container").each do |show|
-      shows << show
+    index_page.css("body div.container").each_with_index do |show, index|
+      dummy_array << show
       # build this out to make an array of show hashes with basic attributes
       # don't create Show objects though.
       # shows << {:venue => , :bands => , }
+      shows[index] = {}
+      # Create an array of bands at the :bands key
+      shows[index][:bands] = show.css(".bands").collect {|band| band.css("a").text}
+
+      # Venue
+      #  dummy_array[0].css("div.showHeader a")[0].text
+      shows[index][:venue] = show.css("div.showHeader a")[0].text
+
+      # Date
+      shows[index][:date] = {:mmdd => show.css("div.dateBox div")[0].text, :day_of_week => show.css("div.dateBox div")[1].text}
+
+      # Show url
+      shows[index][:show_url] = show.css("div.showInfo a").attribute("href").value
     end
     # Good place for a pry to look at shows.
-    # binding.pry
+    binding.pry  # look at dummy_array[0] to see what the first show looks like
     shows
   end
 
@@ -41,7 +51,6 @@ class Scraper
     noko_file = Nokogiri::HTML(open(path_to_file))
     # noko_file = File.open(path_to_file)
     binding.pry
-
     # syntax from nokogiri docs:
     # noko_file = File.open(path_to_file) { |f| Nokogiri::HTML(f) }
   end
