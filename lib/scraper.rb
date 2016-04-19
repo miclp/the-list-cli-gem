@@ -30,10 +30,14 @@ class Scraper
       shows[index][:date] = {:mmdd => show.css("div.dateBox div")[0].text, :day_of_week => show.css("div.dateBox div")[1].text}
 
       # Show url
-      shows[index][:show_url] = show.css("div.showInfo a").attribute("href").value
+      # Get the relative url and strip away the './' characters
+      relative_url = show.css("div.showInfo a").attribute("href").value[/(?<=\.\/).*/]
+      # concatenate the relative url with the base, or index_url to get a full url
+      shows[index][:show_url] = index_url + relative_url
+
     end
     # Good place for a pry to look at shows.
-    binding.pry  # look at dummy_array[0] to see what the first show looks like
+    # binding.pry  # look at dummy_array[0] to see what the first show looks like
     shows
   end
 
@@ -56,15 +60,7 @@ class Scraper
   end
 end
 
-
 #### NOTES ####
 
-# shows[9].css("div.dateBox div")[0].text
-# => "4/20"
-#
-# shows[9].css("div.dateBox div")[1].text
-# => "WEDNESDAY"
-
-# PROBLEM HERE:  can't find the text values
-# shows[0].css("div.showHeader .venueLink")
-# => [#<Nokogiri::XML::Element:0x3fd8e157e9b0 name="a" attributes=[#<Nokogiri::XML::Attr:0x3fd8e203f0fc name="class" value="venueLink">, #<Nokogiri::XML::Attr:0x3fd8e203f0e8 name="href" value="?venue=">]>]
+#scrape_index_page can probably be refactored to build a temp show hash and then
+# << shovel it into the shows array at the end.

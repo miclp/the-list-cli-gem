@@ -10,18 +10,23 @@ class CommandLineInteface
   BASE_URL = "http://hellashows.com/"
 
   def run
-    puts "Do you want to scrape shows from the web (s) or open the local file (o)?"
-    puts "you can also type \'t\' to create local temp file."
-    usr_input = gets.chomp
+    while true
+      puts "Do you want to scrape shows from the web (s) or open the local file (o)?"
+      puts "you can also type \'t\' to create local temp file or \'q\' to quit"
+      usr_input = gets.chomp
 
-    case usr_input
-    when 's'
-      make_shows
-
-    when 'o'
-      open_local_file
-    when 't'
-      create_local_temp_file
+      case usr_input
+      when 's'
+        make_shows
+      when 'o'
+        open_local_file
+      when 't'
+        create_local_temp_file
+      when 'q'
+        puts 'bye!'
+        break
+      else
+      end
     end
 
   end
