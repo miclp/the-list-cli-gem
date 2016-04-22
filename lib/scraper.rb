@@ -74,11 +74,17 @@ class Scraper
   #################################################################
 
   # for working/debugging only
-  def self.open_index_page(index_url)
+  def self.pry_index_page(index_url)
     index_page = Nokogiri::HTML(open(index_url))
     binding.pry
+    index_page
   end
 
+  def self.pry_show_page(show_url)
+    show_page = Nokogiri::HTML(open(show_url))
+    binding.pry
+    show_page
+  end
 
   # Create a temp file (that can be loaded later)
   def self.create_local_temp_file(index_url)

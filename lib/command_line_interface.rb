@@ -17,11 +17,13 @@ class CommandLineInteface
       puts "\'a\' Add attributes to shows."
       puts "\'d\' Display all shows."
       puts "\'i\' Display one show."
+      puts "\'map\' Open venue location in Google maps."
       puts "\'o\' Open the local file."
       puts "\'t\' Create local temp file."
       puts "\'q\' to quit."
       puts "Development stuff: "
       puts "\'l\' Open the index.html page and pry."
+      puts "\'k\' Open a show url and pry."
       puts "\'p\' to pry into \#Show code."
 
       usr_input = gets.chomp
@@ -35,12 +37,16 @@ class CommandLineInteface
         display_all_shows
       when 'i'
         display_show_interface
+      when 'map'
+        open_google_map
       when 'o'
         open_local_file
       when 't'
         create_local_temp_file
       when 'l'
-        Scraper.open_index_page(BASE_URL)
+        pry_index_page
+      when 'k'
+        pry_show_page
       when 'p'
         Show.pry_into_code
       when 'q'
@@ -102,6 +108,36 @@ class CommandLineInteface
 
   def disp_horiz_line(color = :green)
     puts "--------------------------------------------------".colorize(color)
+  end
+
+  def open_google_map
+    puts "Which show number?"  # Need to check for valid input?
+    usr_input = gets.chomp.to_i
+    url = "http://maps.google.com/?q=#{Show.all[usr_input - 1].venue}"
+    puts "You can paste this url into your browser:"
+    puts url
+    disp_horiz_line
+    system %{open "#{url}"}
+  end
+
+  # Coding/Debugging stuff
+
+  def pry_index_page
+    Scraper.pry_index_page(BASE_URL)
+  end
+
+  def pry_show_page
+    puts "You can type the number of a show you want to pry into, or paste a url"
+    puts "Type \'p\' to paste a url, otherwise type a show number"
+    usr_input = gets.chomp
+    if usr_input == 'p'
+      puts "Paste or type the url of the page you want to pry into."
+      url = gets.chomp
+    else
+      usr_input = usr_input.to_i
+      url = Show.all[usr_input - 1].show_url
+    end
+    Scraper.pry_show_page(url)
   end
 
   def create_local_temp_file
