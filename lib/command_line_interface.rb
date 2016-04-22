@@ -1,17 +1,21 @@
 require_relative "../lib/scraper.rb"
 require_relative "../lib/the_list.rb"
 require_relative "../lib/show.rb"
+require_relative "../lib/show_importer.rb"
 require 'nokogiri'
 require 'colorize'
 require 'pry'
 
 
 class CommandLineInteface
+
+  attr_accessor :importer
+
   BASE_URL = "http://hellashows.com/"
 
   def run
     while true
-      puts ""
+      disp_horiz_line
       puts "Here are your choices:"
       puts "\'s\' Scrape shows from the web."
       puts "\'a\' Add attributes to shows."
@@ -26,7 +30,7 @@ class CommandLineInteface
       puts "\'k\' Open a show url and pry."
       puts "\'p\' to pry into \#Show code."
 
-      usr_input = gets.chomp
+      usr_input = get_usr_input
 
       case usr_input
       when 's'
@@ -64,8 +68,10 @@ class CommandLineInteface
 
   # Scrape the BASE_URL and create a Show object from each element in shows_array
   def make_shows
-    shows_array = Scraper.scrape_index_page(BASE_URL)
-    Show.create_from_collection(shows_array)
+    @importer = ShowImporter.new(BASE_URL)
+    @importer.import
+    # shows_array = Scraper.scrape_index_page(BASE_URL)
+    # Show.create_from_collection(shows_array)
   end
 
   def add_attributes_to_shows
@@ -112,12 +118,20 @@ class CommandLineInteface
 
   def open_google_map
     puts "Which show number?"  # Need to check for valid input?
-    usr_input = gets.chomp.to_i
-    url = "http://maps.google.com/?q=#{Show.all[usr_input - 1].venue}"
-    puts "You can paste this url into your browser:"
-    puts url
-    disp_horiz_line
-    system %{open "#{url}"}
+    usr_input = get_usr_input.to_i
+    return nil if usr_input > Show.all.size # hack valid input check
+    show = Show.all[usr_input - 1]
+    if show.map
+      venue_map = show.map
+    else
+      venue_map = "http://maps.google.com/?q=#{Show.all[usr_input - 1].venue}"
+    end
+    puts "You are about to open the map url:"
+    puts "#{venue_map}"
+    puts "on your default web browser. Press enter to continue or type \'n\' to skip."
+    usr_input = get_usr_input
+    system %{open "#{venue_map}"} unless usr_input == 'n'
+    nil
   end
 
   # Coding/Debugging stuff
@@ -129,10 +143,10 @@ class CommandLineInteface
   def pry_show_page
     puts "You can type the number of a show you want to pry into, or paste a url"
     puts "Type \'p\' to paste a url, otherwise type a show number"
-    usr_input = gets.chomp
+    usr_input = get_usr_input
     if usr_input == 'p'
       puts "Paste or type the url of the page you want to pry into."
-      url = gets.chomp
+      url = get_usr_input
     else
       usr_input = usr_input.to_i
       url = Show.all[usr_input - 1].show_url

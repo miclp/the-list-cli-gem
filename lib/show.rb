@@ -35,6 +35,11 @@ class Show
     attributes_hash.each do |key, value|
       self.send "#{key}=" , value
     end
+
+    # Add the google maps query url for the venue location
+    maps_url = "http://maps.google.com/?q=#{self.venue}"
+    self.map = maps_url
+
     self
   end
 

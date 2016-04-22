@@ -30,7 +30,8 @@ class Scraper
       # shows << {:venue => , :bands => , }
       shows[index] = {}
       # Create an array of bands at the :bands key
-      shows[index][:bands] = show.css(".bands a").collect {|band| band.text}
+      shows[index][:bands] = show.css(".bands a").collect {|band| band.text.strip}
+      ### note - the .strip takes off space [presumably] left in by hellashows.com
 
       # Venue
       shows[index][:venue] = show.css("div.showHeader a")[0].text
@@ -61,7 +62,7 @@ class Scraper
 
     # Maps attributes
     # I'm not sure if this is the correct one?:
-    show_attributes[:map] = show_page.css("div iframe").attribute("src").value
+    # show_attributes[:map] = show_page.css("div iframe").attribute("src").value
 
     show_attributes
   end

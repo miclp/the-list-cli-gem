@@ -6,6 +6,19 @@ class Artist
 
   @@all = []
 
+### FINDABLE methods.  (To be put in a module) ###
+  # remove the self. prefix for module
+  def self.find_by_name(name)
+    self.all.detect {|object| object.name == name}
+  end
+
+  def self.find_or_create_by_name(name)
+    return self.find_by_name(name) if self.find_by_name(name) # if artist is found, return it.
+    # otherwise, create it
+    self.create(name)
+  end
+### END FINDABLE METHODS ###
+
   def initialize(name)
     @name = name
     @shows = []
