@@ -1,9 +1,21 @@
 require 'open-uri'
 require 'nokogiri'
 require 'pry'
+# for development only - probably want to remove for 'release' version
+require 'memcached'
 
 
 class Scraper
+
+  ### NOTES ###
+  #scrape_index_page can probably be refactored to build a temp show hash and then
+  # << shovel it into the shows array at the end.
+  ### End Notes ###
+
+  # Open the www.hellashows.com index page and scrape each show for attributes.
+  # Return an array of hashes, each hash containing the scraped attributes for a show.
+  # The hashes can be passed to the #Show class, either individually or as an
+  # array in #Show.create_from_collection.
 
   def self.scrape_index_page(index_url)
     # Open the url with nokogiri
@@ -11,19 +23,16 @@ class Scraper
 
     # array of shows to be returned
     shows = []
-    dummy_array = []
 
     index_page.css("body div.container").each_with_index do |show, index|
-      dummy_array << show
-      # build this out to make an array of show hashes with basic attributes
-      # don't create Show objects though.
+      # make an array of show hashes with basic attributes
+
       # shows << {:venue => , :bands => , }
       shows[index] = {}
       # Create an array of bands at the :bands key
-      shows[index][:bands] = show.css(".bands").collect {|band| band.css("a").text}
+      shows[index][:bands] = show.css(".bands a").collect {|band| band.text}
 
       # Venue
-      #  dummy_array[0].css("div.showHeader a")[0].text
       shows[index][:venue] = show.css("div.showHeader a")[0].text
 
       # Date
@@ -34,10 +43,7 @@ class Scraper
       relative_url = show.css("div.showInfo a").attribute("href").value[/(?<=\.\/).*/]
       # concatenate the relative url with the base, or index_url to get a full url
       shows[index][:show_url] = index_url + relative_url
-
     end
-    # Good place for a pry to look at shows.
-    # binding.pry  # look at dummy_array[0] to see what the first show looks like
     shows
   end
 
@@ -55,7 +61,7 @@ class Scraper
 
     # Maps attributes
     # I'm not sure if this is the correct one?:
-    # show_page.css("div iframe").attribute("src").value
+    show_attributes[:map] = show_page.css("div iframe").attribute("src").value
 
     show_attributes
   end
@@ -68,6 +74,10 @@ class Scraper
   #################################################################
 
   # for working/debugging only
+  def self.open_index_page(index_url)
+    index_page = Nokogiri::HTML(open(index_url))
+    binding.pry
+  end
 
 
   # Create a temp file (that can be loaded later)
@@ -88,8 +98,3 @@ class Scraper
     # noko_file = File.open(path_to_file) { |f| Nokogiri::HTML(f) }
   end
 end
-
-#### NOTES ####
-
-#scrape_index_page can probably be refactored to build a temp show hash and then
-# << shovel it into the shows array at the end.

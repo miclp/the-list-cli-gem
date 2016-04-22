@@ -3,7 +3,7 @@ require 'pry'
 
 class Show
 
-  attr_accessor :bands, :venue, :date, :show_url, :original_text, :additional_info #, :cost, :age_restrictions
+  attr_accessor :bands, :venue, :date, :show_url, :original_text, :additional_info, :map#, :cost, :age_restrictions
 
   # Store all show objects in @@all
   @@all = []
@@ -25,6 +25,10 @@ class Show
 
   def self.all
     @@all
+  end
+
+  def self.pry_into_code
+    binding.pry
   end
 
   def add_show_attributes(attributes_hash)
