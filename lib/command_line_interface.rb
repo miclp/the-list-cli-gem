@@ -36,9 +36,9 @@ class CommandLineInteface
       when 's'
         make_shows
       when 'a'
-        add_attributes_to_shows
+        Show.add_attributes_to_shows
       when 'd'
-        display_all_shows
+        Show.display_all_shows
       when 'i'
         display_show_interface
       when 'map'
@@ -70,44 +70,15 @@ class CommandLineInteface
   def make_shows
     @importer = ShowImporter.new(BASE_URL)
     @importer.import
-    # shows_array = Scraper.scrape_index_page(BASE_URL)
-    # Show.create_from_collection(shows_array)
   end
 
-  def add_attributes_to_shows
-    Show.all.each do |show|
-      attributes = Scraper.scrape_show_page(show.show_url)
-      show.add_show_attributes(attributes)
-    end
-  end
-
+  ### shouldn't go in show.rb
   def display_show_interface
     puts "There are #{Show.all.size} shows.  Enter the number of the show you'd like to display"
     usr_input = get_usr_input.to_i
     if usr_input <= Show.all.size
-      display_show(usr_input)
-    end
-  end
-
-  # Take a show num in "base 1 indexing" and return the show from Show.all
-  def display_show(show_num)
-    disp_horiz_line
-    show = Show.all[show_num - 1]
-    show.instance_variables.each do |v|
-      value = show.instance_variable_get(v)
-      puts " #{v}:".sub(/@/, '').colorize(:light_blue) + " #{value}"
-    end
-    disp_horiz_line
-  end
-
-  def display_all_shows
-    disp_horiz_line
-    Show.all.each do |show|
-      # puts"#{student.name.upcase}".colorize(:blue)
-      show.instance_variables.each do |v|
-        value = show.instance_variable_get(v)
-        puts " #{v}:".sub(/@/, '').colorize(:light_blue) + " #{value}"
-      end
+      disp_horiz_line
+      Show.display_show(usr_input)
       disp_horiz_line
     end
   end
@@ -121,16 +92,11 @@ class CommandLineInteface
     usr_input = get_usr_input.to_i
     return nil if usr_input > Show.all.size # hack valid input check
     show = Show.all[usr_input - 1]
-    if show.map
-      venue_map = show.map
-    else
-      venue_map = "http://maps.google.com/?q=#{Show.all[usr_input - 1].venue}"
-    end
-    puts "You are about to open the map url:"
-    puts "#{venue_map}"
+    puts "You are about to open the map url for:"
+    puts "#{show.venue}"
     puts "on your default web browser. Press enter to continue or type \'n\' to skip."
     usr_input = get_usr_input
-    system %{open "#{venue_map}"} unless usr_input == 'n'
+    show.open_in_google_maps unless usr_input == 'n'
     nil
   end
 
