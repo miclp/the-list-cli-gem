@@ -23,7 +23,7 @@ class Show
 
   def self.create_from_collection(shows)
     shows.each do |show_hash|
-      Show.new(show_hash)
+      Show.new(show_hash)  # could this be self.new(show_hash)?
     end
   end
 
@@ -42,6 +42,7 @@ class Show
       value = show.instance_variable_get(v)
       puts " #{v}:".sub(/@/, '').colorize(:light_blue) + " #{value}"
     end
+    nil
   end
 
   def self.display_all_shows
@@ -54,7 +55,78 @@ class Show
       end
       puts "------------------------------------------------"
     end
+    nil  # make sure this doesn't change behavior.  If so, remove it (will return @@all by default)
   end
+
+  def self.display_some_shows(array)
+    array.each do |show|
+      show.display
+      horiz_line
+    end
+    nil
+  end
+
+  ## note: combine display_by_artist and display_artist_shows by checking if the
+  #  input is a string or integer and acting accordingly.
+
+  # Take a number (corresponding to self.all_bands) and display all shows by that
+  # artist.
+  def self.display_by_artist(artist_number)
+    artist = self.all_bands[artist_number - 1]
+    artist_shows = self.select_shows_by_artist(artist)
+    self.display_some_shows(artist_shows)
+  end
+
+  # Alternately, take an artist name and dispaly all shows by that artist.
+  def self.display_artist_shows(artist)
+    artist_shows = self.select_shows_by_artist(artist)
+    self.display_some_shows(artist_shows)
+  end
+
+  # Select all shows with a given artist_name string
+  def self.select_shows_by_artist(artist_name)
+    self.all.select {|show| show.bands.include?(artist_name)}
+  end
+
+  # Return a list of all show dates
+  def self.dates
+
+  end
+
+  # Return a list of all show artists
+  def self.all_bands
+    all_bands = []
+    self.all.each do |show|
+      show.bands.each do |band|
+        all_bands << band if !all_bands.include?(band)
+      end
+    end
+    all_bands.sort
+  end
+
+  # Display all bands as a numbered list
+  def self.display_all_bands
+    self.all_bands.each_with_index do |band, index|
+      puts "#{index + 1}. #{band}"
+    end
+    nil
+  end
+
+  # Return a list of all venues
+  def self.list_venues
+    all_venues = []
+    self.all.each do |show|
+      # Add the show's venue to venues if it isn't already in the list
+      all_venues << show.venue if !all_venues.include?(show.venue)
+    end
+    all_venues.sort
+  end
+
+  # Return a list of shows that all fall on a specific weekday
+  def self.weekday(day = "FRIDAY")
+    self.all.select {|show| show.date[:day_of_week] == day}
+  end
+
 
   # For debugging only
   def self.pry_into_code
@@ -86,6 +158,19 @@ class Show
       self.map = venue_map
     end
     system %{open "#{venue_map}"}
+  end
+
+  def display
+    self.instance_variables.each do |v|
+      value = self.instance_variable_get(v)
+      puts " #{v}:".sub(/@/, '').colorize(:light_blue) + " #{value}"
+    end
+  end
+
+  ### Etc. ###
+
+  def self.horiz_line(color = :green)
+    puts "--------------------------------------------------".colorize(color)
   end
 
 ### END Instance Methods ###

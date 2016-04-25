@@ -18,4 +18,5 @@ class ShowImporter
     shows_array = Scraper.scrape_index_page(self.base_url)
     Show.create_from_collection(shows_array)
   end
+
 end
