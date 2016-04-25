@@ -35,6 +35,7 @@ class CommandLineInteface
       puts "\'b\' List all bands/artists."
       puts "\'i\' Display one show."
       puts "\'m\' Open venue location in Google maps."
+      puts "\'z\' Display all shows by a given band."
       puts "\'c\' Display all shows on a given date (mm/dd format)"
       puts "\'w\' Display all shows on a given weekday"
       # puts "\'o\' Open the local file."
@@ -71,6 +72,8 @@ class CommandLineInteface
       when 'w'
         # prompt user for a weekday and display shows that fall on that day of week
         display_by_weekday
+      when 'z'
+        display_by_band
       when 'l'
         pry_index_page
       when 'k'
@@ -124,6 +127,15 @@ class CommandLineInteface
     nil
   end
 
+  def display_by_band
+    # call:
+    # Show.display_by_artist(artist_number)
+    Show.display_all_bands
+    puts "Please enter the NUMBER of the band whose shows you want to display.."
+    usr_input = get_usr_input.to_i
+    Show.display_by_artist(usr_input)
+    nil
+  end
 
   def display_by_date
   end
