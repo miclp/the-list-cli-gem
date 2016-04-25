@@ -100,7 +100,9 @@ class CommandLineInteface
   end
 
   ### shouldn't go in show.rb
+  # Note:  add a #display_all_shows_lite method to show.rb
   def display_show_interface
+    Show.display_all_shows_lite
     puts "There are #{Show.all.size} shows.  Enter the number of the show you'd like to display"
     usr_input = get_usr_input.to_i
     if usr_input <= Show.all.size

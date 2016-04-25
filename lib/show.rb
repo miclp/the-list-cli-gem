@@ -58,6 +58,15 @@ class Show
     nil  # make sure this doesn't change behavior.  If so, remove it (will return @@all by default)
   end
 
+  # Display a numbered list of shows (bands only)
+  def self.display_all_shows_lite
+    self.horiz_line
+    self.all.each_with_index do |show, index|
+      puts "#{index}: #{show.bands}"
+      self.horiz_line
+    end
+  end
+
   def self.display_some_shows(array)
     array.each do |show|
       show.display
