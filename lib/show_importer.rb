@@ -8,7 +8,7 @@ require 'pry'
 
 class ShowImporter
 
-  attr_accessor :base_url
+  attr_accessor :base_url, :timestamp
 
   def initialize(url)
     @base_url = url
@@ -17,6 +17,7 @@ class ShowImporter
   def import
     shows_array = Scraper.scrape_index_page(self.base_url)
     Show.create_from_collection(shows_array)
+    self.timestamp = Time.now
   end
 
 end

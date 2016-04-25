@@ -106,6 +106,9 @@ class Show
 
   # Display all bands as a numbered list
   def self.display_all_bands
+    self.horiz_line
+    puts "List of all bands in alphabetical order:"
+    self.horiz_line
     self.all_bands.each_with_index do |band, index|
       puts "#{index + 1}. #{band}"
     end
@@ -160,6 +163,7 @@ class Show
     system %{open "#{venue_map}"}
   end
 
+  # Display all attributes of self (display one show)
   def display
     self.instance_variables.each do |v|
       value = self.instance_variable_get(v)
