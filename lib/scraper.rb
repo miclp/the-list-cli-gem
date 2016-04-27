@@ -72,36 +72,5 @@ class Scraper
   # show_page.css("div #originalString #stringText").text
 
 
-  #################################################################
 
-  # for working/debugging only
-  def self.pry_index_page(index_url)
-    index_page = Nokogiri::HTML(open(index_url))
-    binding.pry
-    index_page
-  end
-
-  def self.pry_show_page(show_url)
-    show_page = Nokogiri::HTML(open(show_url))
-    binding.pry
-    show_page
-  end
-
-  # Create a temp file (that can be loaded later)
-  def self.create_local_temp_file(index_url)
-    index_page = Nokogiri::HTML(open(index_url))
-    newfile = File.open("temp", "w")
-
-    newfile.write(index_page)
-    newfile.close
-  end
-
-  # doesn't work
-  def self.open_local_file(path_to_file)
-    noko_file = Nokogiri::HTML(open(path_to_file))
-    # noko_file = File.open(path_to_file)
-    binding.pry
-    # syntax from nokogiri docs:
-    # noko_file = File.open(path_to_file) { |f| Nokogiri::HTML(f) }
-  end
 end

@@ -30,56 +30,44 @@ class CommandLineInteface
       disp_horiz_line
       puts "Here are your choices:"
 
-      puts "\'a\' Add attributes to shows. (adds map link and additional info.)"
-      puts "\'d\' Display all shows."
-      puts "\'b\' List all bands/artists."
-      puts "\'i\' Display one show."
+      puts "\'add\' Add attributes to shows. (adds map link and additional info.)"
+      puts "\'a\' Display all shows."
+      puts "\'l\' List all bands/artists."
+      puts "\'o\' Display one show."
       puts "\'m\' Open venue location in Google maps."
-      puts "\'z\' Display all shows by a given band."
+      puts "\'b\' Display all shows by a given band."
       puts "\'c\' Display all shows on a given date (mm/dd format)"
       puts "\'w\' Display all shows on a given weekday"
-      # puts "\'o\' Open the local file."
-      # puts "\'t\' Create local temp file."
-      puts "\'s\' Re-Scrape shows from the web. (Shows were last scraped at #{self.importer.timestamp}."
+      puts "\'scrape\' Re-Scrape shows from the web. (Shows were last scraped at #{self.importer.timestamp}."
       puts "\'q\' to quit."
-      puts "Development stuff: "
-      puts "\'l\' Open the index.html page and pry."
-      puts "\'k\' Open a show url and pry."
-      puts "\'p\' to pry into \#Show code."
+      # puts "Development stuff: "
+      # puts "\'p\' to pry into \#Show code."
 
       usr_input = get_usr_input
 
       case usr_input
-      when 's'
+      when 'scrape'
         make_shows
-      when 'a'
+      when 'add'
         Show.add_attributes_to_shows
-      when 'd'
+      when 'a'
         Show.display_all_shows
-      when 'i'
+      when 'o'
         display_show_interface
       when 'm'
         open_google_map
-      when 'b'
+      when 'l'
         Show.display_all_bands
-      # when 'o'
-      #   open_local_file
-      # when 't'
-      #   create_local_temp_file
       when 'c'
         # prompt user for mm/dd and display shows on that date
         display_by_date
       when 'w'
         # prompt user for a weekday and display shows that fall on that day of week
         display_by_weekday
-      when 'z'
+      when 'b'
         display_by_band
-      when 'l'
-        pry_index_page
-      when 'k'
-        pry_show_page
-      when 'p'
-        Show.pry_into_code
+      # when 'p'
+      #   Show.pry_into_code
       when 'q'
         puts 'bye!'
         break
@@ -153,33 +141,5 @@ class CommandLineInteface
     Show.display_some_shows(Show.weekday(days_of_week[input]))
   end
 
-  # Coding/Debugging stuff
-
-  def pry_index_page
-    Scraper.pry_index_page(BASE_URL)
-  end
-
-  def pry_show_page
-    puts "You can type the number of a show you want to pry into, or paste a url"
-    puts "Type \'p\' to paste a url, otherwise type a show number"
-    usr_input = get_usr_input
-    if usr_input == 'p'
-      puts "Paste or type the url of the page you want to pry into."
-      url = get_usr_input
-    else
-      usr_input = usr_input.to_i
-      url = Show.all[usr_input - 1].show_url
-    end
-    Scraper.pry_show_page(url)
-  end
-
-  def create_local_temp_file
-    Scraper.create_local_temp_file(BASE_URL)
-  end
-
-  def open_local_file
-    local_path = File.join(File.dirname(__FILE__), "../temp")
-    Scraper.open_local_file(local_path)
-  end
 
 end
