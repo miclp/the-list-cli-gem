@@ -1,9 +1,5 @@
 require 'open-uri'
 require 'nokogiri'
-require 'pry'
-# for development only - probably want to remove for 'release' version
-require 'memcached'
-
 
 class Scraper
 
@@ -60,17 +56,6 @@ class Scraper
     # Get additional attributes
     show_attributes[:additional_info] = show_page.css("div.showHeader font.attributes").text
 
-    # Maps attributes
-    # I'm not sure if this is the correct one?:
-    # show_attributes[:map] = show_page.css("div iframe").attribute("src").value
-
     show_attributes
   end
-
-  # NOTES for self.scrape_show_page
-  # Original text (from Steve K's list)
-  # show_page.css("div #originalString #stringText").text
-
-
-
 end

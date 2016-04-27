@@ -1,9 +1,7 @@
-# Show objects (concert objects)
-require 'pry'
 
 class Show
 
-  attr_accessor :bands, :venue, :date, :show_url, :original_text, :additional_info, :map#, :cost, :age_restrictions
+  attr_accessor :bands, :venue, :date, :show_url, :original_text, :additional_info, :map
 
   # Store all show objects in @@all
   @@all = []
@@ -75,7 +73,7 @@ class Show
     nil
   end
 
-  ## note: combine display_by_artist and display_artist_shows by checking if the
+  ## note: Could combine display_by_artist and display_artist_shows by checking if the
   #  input is a string or integer and acting accordingly.
 
   # Take a number (corresponding to self.all_bands) and display all shows by that
@@ -144,7 +142,6 @@ class Show
     self.all.select {|show| show.date[:day_of_week] == day}
   end
 
-
   # For debugging only
   def self.pry_into_code
     binding.pry
@@ -153,7 +150,6 @@ class Show
 ### END Class methods ###
 
 ### BEGIN Instance Methods ###
-
 
   def add_show_attributes(attributes_hash)
     attributes_hash.each do |key, value|
@@ -189,8 +185,5 @@ class Show
 
   def self.horiz_line(color = :green)
     puts "--------------------------------------------------".colorize(color)
-  end
-
-### END Instance Methods ###
-
-end
+  end  ### End Instance Methods ###
+end # End class

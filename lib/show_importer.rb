@@ -1,10 +1,10 @@
-require_relative "../lib/scraper.rb"
-require_relative "../lib/the_list.rb"
-require_relative "../lib/show.rb"
-require_relative "../lib/command_line_interface.rb"
-require 'nokogiri'
-require 'colorize'
-require 'pry'
+# require_relative "../lib/scraper.rb"
+# require_relative "../lib/the_list.rb"
+# require_relative "../lib/show.rb"
+# require_relative "../lib/command_line_interface.rb"
+# require 'nokogiri'
+# require 'colorize'
+# require 'pry'
 
 class ShowImporter
 

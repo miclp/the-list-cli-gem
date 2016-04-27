@@ -74,7 +74,6 @@ class CommandLineInteface
       else
       end
     end
-
   end
 
   def get_usr_input
@@ -87,8 +86,7 @@ class CommandLineInteface
     @importer.import
   end
 
-  ### shouldn't go in show.rb
-  # Note:  add a #display_all_shows_lite method to show.rb
+  # Prompt user for input and display one show
   def display_show_interface
     Show.display_all_shows_lite
     puts "There are #{Show.all.size} shows.  Enter the number of the show you'd like to display"
@@ -129,8 +127,18 @@ class CommandLineInteface
 
   def display_by_date
     puts "Please enter the date you want to search in mm/dd format"
-    date = get_usr_input.gsub("0", "")  #remove zeroes
-    Show.display_some_shows(Show.select_shows_by_date(date))
+    input_date = get_usr_input
+    #remove zeroes
+    month = input_date[/.*(?=\/)/]
+    day = input_date[/(?<=\/).*/]
+    if month[0] == "0"
+      month = month.sub("0", "")
+    end
+    if day[0] == "0"
+      day = day.sub("0", "")
+    end
+    cleaned_up_date = "#{month}/#{day}"
+    Show.display_some_shows(Show.select_shows_by_date(cleaned_up_date))
     nil
   end
 
@@ -145,6 +153,5 @@ class CommandLineInteface
     Show.display_some_shows(Show.weekday(days_of_week[input]))
     nil
   end
-
 
 end
