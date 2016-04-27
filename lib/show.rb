@@ -62,7 +62,7 @@ class Show
   def self.display_all_shows_lite
     self.horiz_line
     self.all.each_with_index do |show, index|
-      puts "#{index}: #{show.bands}"
+      puts "#{index + 1}: #{show.bands}"
       self.horiz_line
     end
   end
@@ -95,6 +95,11 @@ class Show
   # Select all shows with a given artist_name string
   def self.select_shows_by_artist(artist_name)
     self.all.select {|show| show.bands.include?(artist_name)}
+  end
+
+  # Select all shows on a given date (mm/dd)
+  def self.select_shows_by_date(requested_date)
+    self.all.select {|show| show.date[:mmdd] == requested_date}
   end
 
   # Return a list of all show dates

@@ -128,6 +128,10 @@ class CommandLineInteface
   end
 
   def display_by_date
+    puts "Please enter the date you want to search in mm/dd format"
+    date = get_usr_input.gsub("0", "")  #remove zeroes
+    Show.display_some_shows(Show.select_shows_by_date(date))
+    nil
   end
 
   # use Show.weekday
@@ -139,6 +143,7 @@ class CommandLineInteface
     end
     input = get_usr_input.to_i
     Show.display_some_shows(Show.weekday(days_of_week[input]))
+    nil
   end
 
 
